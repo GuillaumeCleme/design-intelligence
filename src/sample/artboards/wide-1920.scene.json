@@ -1,0 +1,129 @@
+{
+  "id": "artboard.wide.1920",
+  "type": "artboard",
+  "name": "Wide Display Banner",
+  "width": 1920,
+  "height": 1080,
+  "unit": "px",
+  "background": {
+    "type": "solid",
+    "color": "{colors.darkGrey}"
+  },
+  "children": [
+    {
+      "id": "wide.background",
+      "type": "image",
+      "name": "Background Image",
+      "assetId": "background.hero",
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080,
+      "fit": "cover",
+      "opacity": 1
+    },
+    {
+      "id": "wide.gradient.overlay",
+      "type": "rect",
+      "name": "Right-to-left dark gradient overlay",
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080,
+      "style": {
+        "fill": {
+          "type": "linear-gradient",
+          "angle": 270,
+          "stops": [
+            {
+              "offset": 0,
+              "color": "{colors.overlayBlack}",
+              "opacity": 0.84
+            },
+            {
+              "offset": 0.48,
+              "color": "{colors.overlayBlack}",
+              "opacity": 0.38
+            },
+            {
+              "offset": 1,
+              "color": "{colors.overlayBlack}",
+              "opacity": 0.04
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wide.left.panel",
+      "type": "rect",
+      "name": "Primary headline panel",
+      "x": 120,
+      "y": 540,
+      "width": 560,
+      "height": 320,
+      "style": {
+        "fill": {
+          "type": "solid",
+          "color": "{colors.darkGrey}",
+          "opacity": 0.9
+        },
+        "radius": 32
+      }
+    },
+    {
+      "id": "wide.logo",
+      "type": "image",
+      "name": "Imported Logo",
+      "assetId": "logo.primary",
+      "x": 168,
+      "y": 590,
+      "width": 220,
+      "height": 84,
+      "fit": "contain"
+    },
+    {
+      "id": "wide.primary.headline",
+      "type": "text",
+      "name": "Primary Tagline",
+      "x": 168,
+      "y": 710,
+      "width": 460,
+      "height": 140,
+      "text": "CREATE\nWITHOUT LIMITS",
+      "style": {
+        "fontFamily": "{fonts.headline.fontFamily}",
+        "fontWeight": 700,
+        "fontSize": 64,
+        "lineHeight": 70,
+        "letterSpacing": -1.4,
+        "color": "{colors.yellow}",
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "wide.secondary.headline",
+      "type": "text",
+      "name": "Secondary Tagline",
+      "x": 1160,
+      "y": 384,
+      "width": 560,
+      "height": 180,
+      "text": "Design systems that scale across every format.",
+      "style": {
+        "fontFamily": "{fonts.secondary.fontFamily}",
+        "fontWeight": 700,
+        "fontSize": 58,
+        "lineHeight": 66,
+        "letterSpacing": -1,
+        "color": "{colors.white}",
+        "align": "right"
+      }
+    }
+  ],
+  "export": {
+    "formats": ["png", "webp", "html", "pdf", "psd"],
+    "defaultFormat": "png",
+    "scale": 1
+  }
+}
