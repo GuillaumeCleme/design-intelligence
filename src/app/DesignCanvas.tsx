@@ -5,6 +5,7 @@ import type {
   Tokens,
 } from "../package/types";
 import { ArtboardPreview } from "./ArtboardPreview";
+import { cn } from "@/lib/utils";
 
 type Props = {
   manifestArtboards: ArtboardManifestEntry[];
@@ -26,20 +27,15 @@ export function DesignCanvas({
   onSelectArtboard,
 }: Props) {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        overflow: "auto",
-        background: "#2b2b2b",
-      }}
-    >
+    <div className="w-full h-full overflow-auto bg-[#1a1a1a]">
       <div
+        className="relative"
         style={{
-          position: "relative",
           width: 3400 * zoom,
           height: 1400 * zoom,
           transformOrigin: "top left",
+          margin: "60px auto",
+          minWidth: "fit-content",
         }}
       >
         {manifestArtboards.map((artboard) => {
@@ -51,16 +47,19 @@ export function DesignCanvas({
             <button
               key={artboard.id}
               onClick={() => onSelectArtboard(artboard.id)}
+              className={cn(
+                "absolute p-0 cursor-pointer transition-shadow",
+                isSelected
+                  ? "ring-2 ring-ring shadow-[0_0_20px_rgba(59,130,246,0.3)]"
+                  : "ring-1 ring-border/50 hover:ring-border"
+              )}
               style={{
-                position: "absolute",
                 left: (artboard.x ?? 0) * zoom,
                 top: (artboard.y ?? 0) * zoom,
                 width: artboard.width * zoom,
                 height: artboard.height * zoom,
-                border: isSelected ? "4px solid #3b82f6" : "1px solid #555",
-                padding: 0,
                 background: "transparent",
-                cursor: "pointer",
+                border: "none",
               }}
             >
               {shouldHydrate && scene ? (
@@ -71,20 +70,20 @@ export function DesignCanvas({
                   scale={zoom}
                 />
               ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background: "#111",
-                    color: "#fff",
-                    display: "grid",
-                    placeItems: "center",
-                    fontFamily: "system-ui",
-                  }}
-                >
-                  {artboard.name}
+                <div className="w-full h-full bg-card flex items-center justify-center">
+                  <span className="text-sm text-muted-foreground font-medium">
+                    {artboard.name}
+                  </span>
                 </div>
               )}
+
+              {/* Artboard label */}
+              <div
+                className="absolute -top-6 left-0 text-xs text-muted-foreground font-medium whitespace-nowrap"
+                style={{ fontSize: Math.max(10, 12 * zoom) }}
+              >
+                {artboard.name}
+              </div>
             </button>
           );
         })}

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import manifestJson from "../sample/manifest.json";
 import tokensJson from "../sample/tokens.json";
 import squareSceneJson from "../sample/artboards/square-1080.scene.json";
@@ -13,8 +11,9 @@ import type {
   Tokens,
 } from "../package/types";
 import { DesignCanvas } from "./DesignCanvas";
-import { exportArtboardToPng, downloadBlob } from "../renderer/exportArtboard";
-import { saveDesignPackage } from "../package/saveDesignPackage";
+import { AppShell } from "./AppShell";
+import { useToolStore } from "@/tools/store";
+import { useState } from "react";
 
 export default function App() {
   const manifest = DesignPackageManifestSchema.parse(
@@ -34,76 +33,14 @@ export default function App() {
     [wideScene.id]: wideScene,
   };
 
+  const zoom = useToolStore((s) => s.zoom);
+
   const [selectedArtboardId, setSelectedArtboardId] = useState<string>(
     manifest.artboards[0].id
   );
 
-  const [zoom, setZoom] = useState(0.25);
-
   return (
-    <div>
-      <div
-        style={{
-          position: "fixed",
-          zIndex: 10,
-          left: 16,
-          top: 16,
-          background: "white",
-          borderRadius: 8,
-          padding: 12,
-          fontFamily: "system-ui",
-          boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
-        }}
-      >
-        <strong>Design Package POC</strong>
-
-        <div style={{ marginTop: 8 }}>
-          <label>
-            Zoom:{" "}
-            <input
-              type="range"
-              min="0.1"
-              max="1"
-              step="0.05"
-              value={zoom}
-              onChange={(event) => setZoom(Number(event.target.value))}
-            />
-            {zoom.toFixed(2)}
-          </label>
-        </div>
-
-        <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-          <button
-            onClick={async () => {
-              const scene = scenes[selectedArtboardId];
-              const blob = await exportArtboardToPng({
-                scene,
-                assets: manifest.assets,
-                tokens,
-              });
-
-              downloadBlob(blob, `${scene.id}.png`);
-            }}
-          >
-            Export selected PNG
-          </button>
-
-          <button
-            onClick={async () => {
-              const blob = await saveDesignPackage({
-                manifest,
-                tokens,
-                scenes,
-              });
-
-              downloadBlob(blob, "campaign-banners.designpkg");
-            }}
-          >
-            Save .designpkg
-          </button>
-        </div>
-      </div>
-
+    <AppShell>
       <DesignCanvas
         manifestArtboards={manifest.artboards}
         scenes={scenes}
@@ -113,6 +50,6 @@ export default function App() {
         zoom={zoom}
         onSelectArtboard={setSelectedArtboardId}
       />
-    </div>
+    </AppShell>
   );
 }
