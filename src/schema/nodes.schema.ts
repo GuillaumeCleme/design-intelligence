@@ -1,27 +1,5 @@
 import { z } from "zod";
-
-export const SolidPaintSchema = z.object({
-  type: z.literal("solid"),
-  color: z.string(),
-  opacity: z.number().min(0).max(1).optional(),
-});
-
-export const LinearGradientPaintSchema = z.object({
-  type: z.literal("linear-gradient"),
-  angle: z.number(),
-  stops: z.array(
-    z.object({
-      offset: z.number().min(0).max(1),
-      color: z.string(),
-      opacity: z.number().min(0).max(1),
-    })
-  ),
-});
-
-export const PaintSchema = z.discriminatedUnion("type", [
-  SolidPaintSchema,
-  LinearGradientPaintSchema,
-]);
+import { PaintSchema } from "./designPackage.schema";
 
 export const TokenRefSchema = z.string().regex(/^\{.+\}$/);
 
@@ -50,23 +28,27 @@ export const RectNodeSchema = BaseNodeSchema.extend({
   type: z.literal("rect"),
   style: z.object({
     fill: PaintOrTokenSchema.optional(),
+    stroke: PaintOrTokenSchema.optional(),
+    strokeWidth: z.number().nonnegative().optional(),
     radius: z.number().nonnegative().optional(),
   }),
+});
+
+export const TextStyleSchema = z.object({
+  fontFamily: z.string(),
+  fontWeight: z.number().optional(),
+  fontSize: z.number().positive(),
+  lineHeight: z.number().positive().optional(),
+  letterSpacing: z.number().optional(),
+  color: z.string(),
+  align: z.enum(["left", "center", "right"]).optional(),
+  textTransform: z.enum(["uppercase", "lowercase", "capitalize"]).optional(),
 });
 
 export const TextNodeSchema = BaseNodeSchema.extend({
   type: z.literal("text"),
   text: z.string(),
-  style: z.object({
-    fontFamily: z.string(),
-    fontWeight: z.number().optional(),
-    fontSize: z.number().positive(),
-    lineHeight: z.number().positive().optional(),
-    letterSpacing: z.number().optional(),
-    color: z.string(),
-    align: z.enum(["left", "center", "right"]).optional(),
-    textTransform: z.literal("uppercase").optional(),
-  }),
+  style: TextStyleSchema,
 });
 
 export const SceneNodeSchema = z.discriminatedUnion("type", [
@@ -74,6 +56,12 @@ export const SceneNodeSchema = z.discriminatedUnion("type", [
   RectNodeSchema,
   TextNodeSchema,
 ]);
+
+export const ExportConfigSchema = z.object({
+  formats: z.array(z.string()),
+  defaultFormat: z.string(),
+  scale: z.number().positive(),
+});
 
 export const ArtboardSceneSchema = z.object({
   id: z.string(),
@@ -84,13 +72,7 @@ export const ArtboardSceneSchema = z.object({
   unit: z.literal("px"),
   background: PaintOrTokenSchema.optional(),
   children: z.array(SceneNodeSchema),
-  export: z
-    .object({
-      formats: z.array(z.string()),
-      defaultFormat: z.string(),
-      scale: z.number().positive(),
-    })
-    .optional(),
+  export: ExportConfigSchema.optional(),
 });
 
 export type ArtboardSceneInput = z.infer<typeof ArtboardSceneSchema>;

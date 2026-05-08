@@ -4,6 +4,7 @@
   "format": "designpkg",
   "version": "0.1.0",
   "createdBy": "Design Runtime POC",
+  "createdAt": "2025-01-01T00:00:00.000Z",
   "document": "document.json",
   "tokens": "tokens.json",
   "artboards": [
@@ -32,17 +33,17 @@
     "background.hero": {
       "type": "image",
       "mimeType": "image/jpeg",
-      "path": "/sample-assets/mountain-background.jpg"
+      "path": "assets/images/mountain-background.jpg"
     },
     "logo.primary": {
       "type": "vector",
       "mimeType": "image/svg+xml",
-      "path": "/sample-assets/brand-logo.svg"
+      "path": "assets/vectors/brand-logo.svg"
     },
     "font.inter.bold": {
       "type": "font",
       "mimeType": "font/woff2",
-      "path": "/sample-assets/Inter-Bold.woff2",
+      "path": "assets/fonts/Inter-Bold.woff2",
       "fontFamily": "Inter",
       "fontWeight": 700
     }

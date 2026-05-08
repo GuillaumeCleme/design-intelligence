@@ -29,7 +29,7 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("/sample-assets/Inter-Bold.woff2") format("woff2");
+  src: url("/packages/campaign-banners/assets/fonts/Inter-Bold.woff2") format("woff2");
   font-weight: 700;
 }
 
