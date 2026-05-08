@@ -47,6 +47,8 @@ import { SLASH_COMMANDS } from "@/tools/registry";
 import { useToolStore } from "@/tools/store";
 import { ToolId, ActionId } from "@/tools/types";
 import type { SlashCommand } from "@/tools/types";
+import { useExportSlashCommands, useExecuteExport } from "@/export/useExportPlugins";
+import { useExportContext } from "@/export/ExportContextProvider";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   MousePointer2,
@@ -99,23 +101,37 @@ export function CommandBar() {
   const { commandBarOpen, openCommandBar, closeCommandBar, setActiveTool, executeAction } =
     useToolStore();
 
+  const exportCommands = useExportSlashCommands();
+  const executeExport = useExecuteExport();
+  const exportContext = useExportContext();
+
+  const allCommands = useMemo(
+    () => [...SLASH_COMMANDS, ...exportCommands],
+    [exportCommands]
+  );
+
   const isSlashMode = value.startsWith("/");
 
   const filteredCommands = useMemo(() => {
     if (!isSlashMode) return [];
 
     const search = value.toLowerCase();
-    return SLASH_COMMANDS.filter(
+    return allCommands.filter(
       (cmd) =>
         cmd.command.toLowerCase().includes(search) ||
         cmd.label.toLowerCase().includes(search.replace("/", "")) ||
         cmd.description.toLowerCase().includes(search.replace("/", ""))
     ).slice(0, 8);
-  }, [value, isSlashMode]);
+  }, [value, isSlashMode, allCommands]);
 
   const executeCommand = useCallback(
     (cmd: SlashCommand) => {
-      if (cmd.type === "tool") {
+      if (cmd.type === "export") {
+        const pluginId = cmd.id.replace("plugin:", "");
+        executeExport(pluginId, exportContext).catch((err) =>
+          console.error(`[Export] Failed:`, err)
+        );
+      } else if (cmd.type === "tool") {
         setActiveTool(cmd.id as ToolId);
       } else {
         executeAction(cmd.id as ActionId);
@@ -123,7 +139,7 @@ export function CommandBar() {
       setValue("");
       closeCommandBar();
     },
-    [setActiveTool, executeAction, closeCommandBar]
+    [setActiveTool, executeAction, closeCommandBar, executeExport, exportContext]
   );
 
   const handleSubmit = useCallback(() => {

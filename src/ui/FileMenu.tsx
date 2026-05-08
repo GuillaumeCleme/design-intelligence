@@ -9,13 +9,21 @@ import {
   FileText,
   Package,
   PackageOpen,
+  Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToolStore } from "@/tools/store";
 import { ActionId } from "@/tools/types";
+import { useExportRegistry } from "@/export/registry";
+import { useExecuteExport } from "@/export/useExportPlugins";
+import { useExportContext } from "@/export/ExportContextProvider";
 
 export function FileMenu() {
   const { executeAction } = useToolStore();
+  const { getEnabledPlugins } = useExportRegistry();
+  const enabledPlugins = getEnabledPlugins();
+  const executeExport = useExecuteExport();
+  const exportContext = useExportContext();
 
   return (
     <div className="fixed top-4 left-4 z-50">
@@ -125,6 +133,28 @@ export function FileMenu() {
                     label=".designpkg"
                     onClick={() => executeAction(ActionId.ExportDesignpkg)}
                   />
+
+                  {enabledPlugins.length > 0 && (
+                    <>
+                      <DropdownMenu.Separator className="my-1 h-px bg-border" />
+                      <DropdownMenu.Label className="px-2 py-1 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        Plugins
+                      </DropdownMenu.Label>
+                      {enabledPlugins.map((plugin) => (
+                        <MenuItem
+                          key={plugin.id}
+                          icon={<Layers className="h-4 w-4" />}
+                          label={plugin.name}
+                          onClick={() => {
+                            executeExport(plugin.id, exportContext).catch(
+                              (err) =>
+                                console.error(`[Export] ${plugin.id} failed:`, err)
+                            );
+                          }}
+                        />
+                      ))}
+                    </>
+                  )}
                 </DropdownMenu.SubContent>
               </DropdownMenu.Portal>
             </DropdownMenu.Sub>

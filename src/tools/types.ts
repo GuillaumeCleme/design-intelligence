@@ -85,10 +85,10 @@ export type ActionDefinition = {
 };
 
 export type SlashCommand = {
-  type: "tool" | "action";
+  type: "tool" | "action" | "export";
   command: string;
   label: string;
   description: string;
   icon: string;
-  id: ToolId | ActionId;
+  id: ToolId | ActionId | string;
 };
