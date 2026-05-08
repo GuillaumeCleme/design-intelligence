@@ -1,6 +1,6 @@
 export { reflowScene } from "./engine";
 export { classifyNode, classifyScene } from "./classifier";
-export { REFLOW_PRESETS, findPresetById } from "./presets";
+export { REFLOW_PRESETS, findPresetById, computeAspectRatio } from "./presets";
 export {
   AnchorRegion,
   NodeRole,
