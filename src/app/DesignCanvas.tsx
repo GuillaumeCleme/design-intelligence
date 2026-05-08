@@ -59,8 +59,11 @@ export function DesignCanvas({
               }}
             >
               {/* Artboard clickable container */}
-              <button
+              <div
                 onClick={() => onSelectArtboard(artboard.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter") onSelectArtboard(artboard.id); }}
                 className={cn(
                   "absolute inset-0 p-0 cursor-pointer transition-shadow",
                   isSelected
@@ -70,6 +73,7 @@ export function DesignCanvas({
                 style={{
                   background: "transparent",
                   border: "none",
+                  pointerEvents: isSelected ? "none" : "auto",
                 }}
               >
                 {shouldHydrate && scene ? (
@@ -86,7 +90,7 @@ export function DesignCanvas({
                     </span>
                   </div>
                 )}
-              </button>
+              </div>
 
               {/* Selection overlay — only for selected artboard, above the canvas */}
               {isSelected && scene && (
