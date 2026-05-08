@@ -7,8 +7,10 @@ import { ExportContextProvider } from "@/export/ExportContextProvider";
 import type { ExportContext } from "@/export/types";
 import { usePackageStore } from "@/package/store";
 import { PackageState } from "@/package/types";
+import type { ArtboardScene, SceneNode } from "@/package/types";
 import { reflowScene } from "@/reflow/engine";
 import { ReflowDialog } from "@/ui/ReflowDialog";
+import { ContextMenu, PropertiesPanel, useEditorStore } from "@/editor";
 
 const DEFAULT_PACKAGE_PATH = `${import.meta.env.BASE_URL}packages/campaign-banners/`;
 
@@ -20,6 +22,7 @@ export default function App() {
 
   const [selectedArtboardId, setSelectedArtboardId] = useState<string>("");
   const [reflowDialogOpen, setReflowDialogOpen] = useState(false);
+  const [propertiesPanelOpen, setPropertiesPanelOpen] = useState(false);
 
   useEffect(() => {
     loadFromDirectory(DEFAULT_PACKAGE_PATH);
@@ -27,6 +30,108 @@ export default function App() {
 
   const effectiveArtboardId =
     selectedArtboardId || current?.manifest.artboards[0]?.id || "";
+
+  const handleUpdateNode = useCallback(
+    (artboardId: string, nodeId: string, patch: Partial<SceneNode>) => {
+      if (!current) return;
+      const scene = current.scenes[artboardId];
+      if (!scene) return;
+
+      const updatedChildren = scene.children.map((child) =>
+        child.id === nodeId ? { ...child, ...patch } as SceneNode : child,
+      );
+
+      const updatedScene: ArtboardScene = {
+        ...scene,
+        children: updatedChildren,
+      };
+
+      usePackageStore.getState().updateScene(artboardId, updatedScene);
+    },
+    [current],
+  );
+
+  const handleDeleteNode = useCallback(
+    (artboardId: string, nodeId: string) => {
+      if (!current) return;
+      const scene = current.scenes[artboardId];
+      if (!scene) return;
+
+      const updatedScene: ArtboardScene = {
+        ...scene,
+        children: scene.children.filter((child) => child.id !== nodeId),
+      };
+
+      usePackageStore.getState().updateScene(artboardId, updatedScene);
+      useEditorStore.getState().deselectAll();
+    },
+    [current],
+  );
+
+  const handleDuplicateNode = useCallback(
+    (artboardId: string, nodeId: string) => {
+      if (!current) return;
+      const scene = current.scenes[artboardId];
+      if (!scene) return;
+
+      const node = scene.children.find((n) => n.id === nodeId);
+      if (!node) return;
+
+      const duplicate: SceneNode = {
+        ...node,
+        id: `${node.id}.copy.${Date.now()}`,
+        name: node.name ? `${node.name} Copy` : undefined,
+        x: node.x + 20,
+        y: node.y + 20,
+      } as SceneNode;
+
+      const updatedScene: ArtboardScene = {
+        ...scene,
+        children: [...scene.children, duplicate],
+      };
+
+      usePackageStore.getState().updateScene(artboardId, updatedScene);
+      useEditorStore.getState().selectNode(duplicate.id);
+    },
+    [current],
+  );
+
+  const handleReorderNode = useCallback(
+    (artboardId: string, nodeId: string, direction: "up" | "down" | "top" | "bottom") => {
+      if (!current) return;
+      const scene = current.scenes[artboardId];
+      if (!scene) return;
+
+      const children = [...scene.children];
+      const idx = children.findIndex((n) => n.id === nodeId);
+      if (idx === -1) return;
+
+      const [node] = children.splice(idx, 1);
+
+      switch (direction) {
+        case "up":
+          children.splice(Math.min(idx + 1, children.length), 0, node);
+          break;
+        case "down":
+          children.splice(Math.max(idx - 1, 0), 0, node);
+          break;
+        case "top":
+          children.push(node);
+          break;
+        case "bottom":
+          children.unshift(node);
+          break;
+      }
+
+      const updatedScene: ArtboardScene = { ...scene, children };
+      usePackageStore.getState().updateScene(artboardId, updatedScene);
+    },
+    [current],
+  );
+
+  const handleOpenProperties = useCallback(() => {
+    setPropertiesPanelOpen(true);
+  }, []);
 
   const handleReflow = useCallback(
     (sourceArtboardId: string, targetWidth: number, targetHeight: number) => {
@@ -39,9 +144,6 @@ export default function App() {
         targetWidth,
         targetHeight,
       });
-
-      const updateScene = usePackageStore.getState().updateScene;
-      updateScene(reflowed.id, reflowed);
 
       const existingManifest = current.manifest;
       const maxX = existingManifest.artboards.reduce(
@@ -65,15 +167,12 @@ export default function App() {
         ],
       };
 
-      usePackageStore.setState((state) => ({
-        current: state.current
+      usePackageStore.setState((s) => ({
+        current: s.current
           ? {
-              ...state.current,
+              ...s.current,
               manifest: updatedManifest,
-              scenes: {
-                ...state.current.scenes,
-                [reflowed.id]: reflowed,
-              },
+              scenes: { ...s.current.scenes, [reflowed.id]: reflowed },
             }
           : null,
       }));
@@ -113,7 +212,7 @@ export default function App() {
     Object.entries(current.resolvedAssets).map(([id, resolved]) => [
       id,
       { ...resolved.entry, path: resolved.url },
-    ])
+    ]),
   );
 
   const exportContext: ExportContext = {
@@ -123,6 +222,8 @@ export default function App() {
     assets: assetMap,
     selectedArtboardId: effectiveArtboardId,
   };
+
+  const activeScene = current.scenes[effectiveArtboardId];
 
   return (
     <ExportContextProvider value={exportContext}>
@@ -135,8 +236,32 @@ export default function App() {
           selectedArtboardId={effectiveArtboardId}
           zoom={zoom}
           onSelectArtboard={setSelectedArtboardId}
+          onUpdateNode={handleUpdateNode}
         />
       </AppShell>
+
+      {/* Context menu */}
+      {activeScene && (
+        <ContextMenu
+          scene={activeScene}
+          onUpdateNode={handleUpdateNode}
+          onDeleteNode={handleDeleteNode}
+          onDuplicateNode={handleDuplicateNode}
+          onReorderNode={handleReorderNode}
+          onOpenProperties={handleOpenProperties}
+        />
+      )}
+
+      {/* Properties panel */}
+      {activeScene && (
+        <PropertiesPanel
+          scene={activeScene}
+          open={propertiesPanelOpen}
+          onClose={() => setPropertiesPanelOpen(false)}
+          onUpdateNode={handleUpdateNode}
+        />
+      )}
+
       <ReflowDialog
         open={reflowDialogOpen}
         onOpenChange={setReflowDialogOpen}
