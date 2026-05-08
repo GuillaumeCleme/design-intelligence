@@ -10,7 +10,7 @@ import { PackageState } from "@/package/types";
 import { reflowScene } from "@/reflow/engine";
 import { ReflowDialog } from "@/ui/ReflowDialog";
 
-const DEFAULT_PACKAGE_PATH = "/packages/campaign-banners/";
+const DEFAULT_PACKAGE_PATH = `${import.meta.env.BASE_URL}packages/campaign-banners/`;
 
 export default function App() {
   useInitExportPlugins();
