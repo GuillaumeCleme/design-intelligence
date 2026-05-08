@@ -47,7 +47,7 @@ describe("ACTIONS", () => {
 
   it("every action has a category", () => {
     for (const action of ACTIONS) {
-      expect(["add", "edit", "export", "view", "file"]).toContain(action.category);
+      expect(["add", "edit", "export", "view", "file", "transform"]).toContain(action.category);
     }
   });
 });

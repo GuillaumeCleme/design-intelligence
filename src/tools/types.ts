@@ -62,6 +62,7 @@ export const ActionId = {
   SaveFile: "save-file",
   OpenFile: "open-file",
   NewFile: "new-file",
+  ReflowArtboard: "reflow-artboard",
 } as const;
 
 export type ActionId = (typeof ActionId)[keyof typeof ActionId];
@@ -81,7 +82,7 @@ export type ActionDefinition = {
   description: string;
   icon: string;
   shortcut?: string;
-  category: "add" | "edit" | "export" | "view" | "file";
+  category: "add" | "edit" | "export" | "view" | "file" | "transform";
 };
 
 export type SlashCommand = {

@@ -366,6 +366,14 @@ export const ACTIONS: ActionDefinition[] = [
     shortcut: "Ctrl+N",
     category: "file",
   },
+  {
+    id: ActionId.ReflowArtboard,
+    name: "Reflow Artboard",
+    description: "Reflow the selected artboard to a different size",
+    icon: "Scaling",
+    shortcut: "Ctrl+Shift+R",
+    category: "transform",
+  },
 ];
 
 export function buildSlashCommands(): SlashCommand[] {
@@ -386,7 +394,9 @@ export function buildSlashCommands(): SlashCommand[] {
     const commandStr =
       action.category === "add"
         ? `/add ${action.name.replace("Add ", "").toLowerCase()}`
-        : `/${action.id}`;
+        : action.category === "transform"
+          ? `/reflow`
+          : `/${action.id}`;
 
     commands.push({
       type: "action",

@@ -41,6 +41,7 @@ import {
   FolderOpen,
   FilePlus,
   SquarePlus,
+  Scaling,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SLASH_COMMANDS } from "@/tools/registry";
@@ -88,13 +89,18 @@ const ICON_MAP: Record<string, LucideIcon> = {
   FolderOpen,
   FilePlus,
   PlusSquare: SquarePlus,
+  Scaling,
 };
 
 function getIcon(name: string): LucideIcon {
   return ICON_MAP[name] || Command;
 }
 
-export function CommandBar() {
+type CommandBarProps = {
+  onReflowRequest?: () => void;
+};
+
+export function CommandBar({ onReflowRequest }: CommandBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -133,13 +139,15 @@ export function CommandBar() {
         );
       } else if (cmd.type === "tool") {
         setActiveTool(cmd.id as ToolId);
+      } else if (cmd.id === ActionId.ReflowArtboard && onReflowRequest) {
+        onReflowRequest();
       } else {
         executeAction(cmd.id as ActionId);
       }
       setValue("");
       closeCommandBar();
     },
-    [setActiveTool, executeAction, closeCommandBar, executeExport, exportContext]
+    [setActiveTool, executeAction, closeCommandBar, executeExport, exportContext, onReflowRequest]
   );
 
   const handleSubmit = useCallback(() => {

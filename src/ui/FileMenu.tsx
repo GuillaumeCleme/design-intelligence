@@ -10,6 +10,7 @@ import {
   Package,
   PackageOpen,
   Layers,
+  Scaling,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToolStore } from "@/tools/store";
@@ -18,7 +19,11 @@ import { useExportRegistry } from "@/export/registry";
 import { useExecuteExport } from "@/export/useExportPlugins";
 import { useExportContext } from "@/export/ExportContextProvider";
 
-export function FileMenu() {
+type FileMenuProps = {
+  onReflowRequest?: () => void;
+};
+
+export function FileMenu({ onReflowRequest }: FileMenuProps) {
   const { executeAction } = useToolStore();
   const { getEnabledPlugins } = useExportRegistry();
   const enabledPlugins = getEnabledPlugins();
@@ -85,6 +90,21 @@ export function FileMenu() {
               label="Import .designpkg"
               onClick={() => executeAction(ActionId.ImportDesignpkg)}
             />
+
+            <DropdownMenu.Separator className="my-1 h-px bg-border" />
+
+            <DropdownMenu.Label className="px-3 py-1.5 text-xs font-medium text-muted-foreground">
+              Transform
+            </DropdownMenu.Label>
+
+            <MenuItem
+              icon={<Scaling className="h-4 w-4" />}
+              label="Reflow Artboard..."
+              shortcut="⌘⇧R"
+              onClick={onReflowRequest}
+            />
+
+            <DropdownMenu.Separator className="my-1 h-px bg-border" />
 
             <DropdownMenu.Sub>
               <DropdownMenu.SubTrigger
