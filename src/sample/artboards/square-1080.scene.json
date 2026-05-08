@@ -1,0 +1,111 @@
+{
+  "id": "artboard.square.1080",
+  "type": "artboard",
+  "name": "Square Social Banner",
+  "width": 1080,
+  "height": 1080,
+  "unit": "px",
+  "background": {
+    "type": "solid",
+    "color": "{colors.darkGrey}"
+  },
+  "children": [
+    {
+      "id": "square.background",
+      "type": "image",
+      "name": "Background Image",
+      "assetId": "background.hero",
+      "x": 0,
+      "y": 0,
+      "width": 1080,
+      "height": 1080,
+      "fit": "cover",
+      "opacity": 1
+    },
+    {
+      "id": "square.gradient.overlay",
+      "type": "rect",
+      "name": "Right-to-left dark gradient overlay",
+      "x": 0,
+      "y": 0,
+      "width": 1080,
+      "height": 1080,
+      "style": {
+        "fill": "{effects.rightToLeftShadowOverlay}"
+      },
+      "opacity": 1
+    },
+    {
+      "id": "square.left.panel",
+      "type": "rect",
+      "name": "Primary headline panel",
+      "x": 72,
+      "y": 520,
+      "width": 430,
+      "height": 310,
+      "style": {
+        "fill": {
+          "type": "solid",
+          "color": "{colors.darkGrey}",
+          "opacity": 0.88
+        },
+        "radius": 28
+      }
+    },
+    {
+      "id": "square.logo",
+      "type": "image",
+      "name": "Imported Logo",
+      "assetId": "logo.primary",
+      "x": 112,
+      "y": 560,
+      "width": 180,
+      "height": 72,
+      "fit": "contain",
+      "opacity": 1
+    },
+    {
+      "id": "square.primary.headline",
+      "type": "text",
+      "name": "Primary Tagline",
+      "x": 112,
+      "y": 660,
+      "width": 350,
+      "height": 150,
+      "text": "CREATE\nWITHOUT\nLIMITS",
+      "style": {
+        "fontFamily": "{fonts.headline.fontFamily}",
+        "fontWeight": 700,
+        "fontSize": 52,
+        "lineHeight": 58,
+        "letterSpacing": -1.2,
+        "color": "{colors.yellow}",
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "square.secondary.headline",
+      "type": "text",
+      "name": "Secondary Tagline",
+      "x": 620,
+      "y": 420,
+      "width": 360,
+      "height": 180,
+      "text": "Design systems that scale across every format.",
+      "style": {
+        "fontFamily": "{fonts.secondary.fontFamily}",
+        "fontWeight": 700,
+        "fontSize": 44,
+        "lineHeight": 52,
+        "letterSpacing": -0.8,
+        "color": "{colors.white}",
+        "align": "right"
+      }
+    }
+  ],
+  "export": {
+    "formats": ["png", "webp", "html", "pdf", "psd"],
+    "defaultFormat": "png",
+    "scale": 1
+  }
+}

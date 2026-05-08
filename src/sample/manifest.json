@@ -1,0 +1,50 @@
+{
+  "id": "campaign-banners-001",
+  "name": "Campaign Banner Set",
+  "format": "designpkg",
+  "version": "0.1.0",
+  "createdBy": "Design Runtime POC",
+  "document": "document.json",
+  "tokens": "tokens.json",
+  "artboards": [
+    {
+      "id": "artboard.square.1080",
+      "name": "Square Social Banner",
+      "path": "artboards/square-1080/scene.json",
+      "preview": "artboards/square-1080/preview.webp",
+      "width": 1080,
+      "height": 1080,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "artboard.wide.1920",
+      "name": "Wide Display Banner",
+      "path": "artboards/wide-1920/scene.json",
+      "preview": "artboards/wide-1920/preview.webp",
+      "width": 1920,
+      "height": 1080,
+      "x": 1220,
+      "y": 0
+    }
+  ],
+  "assets": {
+    "background.hero": {
+      "type": "image",
+      "mimeType": "image/jpeg",
+      "path": "/sample-assets/mountain-background.jpg"
+    },
+    "logo.primary": {
+      "type": "vector",
+      "mimeType": "image/svg+xml",
+      "path": "/sample-assets/brand-logo.svg"
+    },
+    "font.inter.bold": {
+      "type": "font",
+      "mimeType": "font/woff2",
+      "path": "/sample-assets/Inter-Bold.woff2",
+      "fontFamily": "Inter",
+      "fontWeight": 700
+    }
+  }
+}

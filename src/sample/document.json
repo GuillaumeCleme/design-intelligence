@@ -1,0 +1,28 @@
+{
+  "id": "document.campaign-banners",
+  "version": "0.1.0",
+  "unit": "px",
+  "colorSpace": "srgb",
+  "rootId": "root",
+  "artboards": [
+    "artboard.square.1080",
+    "artboard.wide.1920"
+  ],
+  "assets": [
+    "background.hero",
+    "logo.primary",
+    "font.inter.bold"
+  ],
+  "dependencies": {
+    "artboard.square.1080": [
+      "background.hero",
+      "logo.primary",
+      "font.inter.bold"
+    ],
+    "artboard.wide.1920": [
+      "background.hero",
+      "logo.primary",
+      "font.inter.bold"
+    ]
+  }
+}
